@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Generator } from './generator/generator.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [Generator],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

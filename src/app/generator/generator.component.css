@@ -1,0 +1,79 @@
+.grid-container {
+    display: grid;
+    grid-template-areas:
+      'message              message         message             message     type        type        image-list'
+      'message              message         message             message     mode        mode        image-list'
+      'size-label           size            size                size        draw-label  .           image-list'
+      'correction-label     correction      scale-label         scale       draw-drag   force-safe  image-list'
+      'mask-label           mask            rotation-label      rotation    draw-black  preview     image-list'
+      'bezel-label          bezel           brushSize-label     brushSize   draw-white  validation  image-list'
+      'subdivision-label    subdivision     dotSize-label       dotSize     draw-erase  file-import coordinates';
+    padding: 10px;
+    margin: 20px auto 20px auto;
+    background-color: white;
+    width: 1000px;
+    font-family: 'Roboto', sans-serif;
+    font-size: small;
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    height: calc(100vh - 240px);
+    width: 100%;
+    overflow: auto;
+}
+
+textarea, .range, select {
+    resize: none;
+    width: calc(100% - 20px);
+    line-height: 128%;
+}
+
+canvas {
+    margin: auto;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+td {
+    min-width: 26px;
+    text-align: right;
+}
+
+.grid-area-message { grid-area: message; }
+.grid-area-type { grid-area: type; }
+.grid-area-mode { grid-area: mode; }
+.grid-area-size-label { grid-area: size-label; width: 142px}
+.grid-area-size { grid-area: size; }
+.grid-area-correction-label { grid-area: correction-label; width: 142px }
+.grid-area-correction { grid-area: correction; }
+.grid-area-mask-label { grid-area: mask-label; width: 142px }
+.grid-area-mask { grid-area: mask; }
+.grid-area-bezel-label { grid-area: bezel-label; width: 142px }
+.grid-area-bezel { grid-area: bezel; }
+.grid-area-subdivision-label { grid-area: subdivision-label; width: 142px }
+.grid-area-subdivision { grid-area: subdivision; }
+.grid-area-scale-label { grid-area: scale-label; width: 86px}
+.grid-area-scale { grid-area: scale; }
+.grid-area-rotation-label { grid-area: rotation-label;  width: 86px}
+.grid-area-rotation { grid-area: rotation; }
+.grid-area-brushSize-label { grid-area: brushSize-label;  width: 86px}
+.grid-area-brushSize { grid-area: brushSize; }
+.grid-area-dotSize-label { grid-area: dotSize-label;  width: 86px}
+.grid-area-dotSize { grid-area: dotSize; }
+.grid-area-draw-label { grid-area: draw-label; }
+.grid-area-draw-drag { grid-area: draw-drag; }
+.grid-area-draw-black { grid-area: draw-black; }
+.grid-area-draw-white { grid-area: draw-white; }
+.grid-area-draw-erase { grid-area: draw-erase; }
+.grid-area-force-safe { grid-area: force-safe; }
+.grid-area-preview { grid-area: preview; }
+.grid-area-validation { grid-area: validation; }
+.grid-area-file-import { grid-area: file-import; }
+.grid-area-coordinates { grid-area: coordinates; }
+.grid-area-image-list { grid-area: image-list; }

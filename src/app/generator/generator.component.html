@@ -1,0 +1,153 @@
+<form name="editForm" [formGroup]="generatorForm">
+    <div class="grid-container">
+        <div class="grid-area-message">
+            <label for="field_message">MESSAGE</label> <br/>
+            <textarea name="message" id="field_message" formControlName="message" (ngModelChange)="setMessage($event)" rows="3">
+            </textarea> 
+        </div>
+        <div class="grid-area-type">
+            <label>TYPE</label> <br/>
+            <select>
+                <option>TEXT</option>
+                <option disabled>EMAIL</option>
+                <option disabled>URL</option>
+                <option disabled>PHONE NUMBER</option>
+                <option disabled>CONTACT DETAILS</option>
+            </select>
+        </div>
+        <div class="grid-area-mode">
+            <label for="field_mode">MODE</label> <br/>
+            <select name="mode" formControlName="mode" id="field_mode" (ngModelChange)="setMode($event)">
+                <option value="NUMERIC">NUMERIC</option>
+                <option value="ALPHANUMERIC">ALPHANUMERIC</option>
+                <option value="BYTE">BYTE</option>
+                <option value="KANJI" disabled>KANJI</option>
+            </select>
+        </div>
+        <div class="grid-area-size-label">
+            <label for="field_size">SIZE <p>{{project.size}} ({{project.size*4 + 17}} × {{project.size*4 + 17}})</p></label>
+        </div>
+        <div class="grid-area-size">
+            <input type="range" class="range" name="size" formControlName="size" id="field_size" (ngModelChange)="setSize($event)" min="1" max="40" step="1"/>
+        </div>
+        <div class="grid-area-correction-label">
+            <label for="field_correction">CORRECTION <p>{{project.correction}}</p></label>
+        </div>
+        <div class="grid-area-correction">
+            <input type="range" class="range" name="correction" formControlName="correction" id="field_correction" (ngModelChange)="setCorrection($event)" min="1" max="4" step="1"/>
+        </div>
+        <div class="grid-area-mask-label">
+            <label for="field_mask">MASK <p>{{project.maskNo}}</p></label>
+        </div>
+        <div class="grid-area-mask">
+            <input type="range" class="range" name="mask" formControlName="maskNo" id="field_mask" (ngModelChange)="setMask($event)" min="0" max="7" step="1"/>
+        </div>
+        <div class="grid-area-bezel-label">
+            <label for="field_bezel">BEZEL <p>{{project.bezel}}</p></label>
+        </div>
+        <div class="grid-area-bezel">
+            <input type="range" class="range" name="bezel" formControlName="bezel" id="field_bezel" (ngModelChange)="setBezel($event)" min="0" max="20" step="1"/>
+        </div>
+        <div class="grid-area-subdivision-label">
+            <label for="field_subdivision">SUBDIVISION <p>{{project.subdivision}}</p></label>
+        </div>
+        <div class="grid-area-subdivision">
+            <input type="range" class="range" name="subdivision" formControlName="subdivision" id="field_subdivision" (ngModelChange)="setSubdivision($event)" min="1" max="8" step="1"/>
+        </div>
+        <div class="grid-area-scale-label">
+            <label for="field_scale">SCALE <p>{{scale}}</p></label>
+        </div>
+        <div class="grid-area-scale">
+            <input type="range" class="range" name="scale" formControlName="scale" id="field_scale" (ngModelChange)="setScale($event)" min="2" max="40" step="2"/>
+        </div>
+        <div class="grid-area-rotation-label">
+            <label for="field_rotation">ROTATION <p>{{rotation}}</p></label>
+        </div>
+        <div class="grid-area-rotation">
+            <input type="range" class="range" name="rotation" formControlName="rotation" id="field_rotation" (ngModelChange)="setRotation($event)" min="0" max="345" step="15"/>
+        </div>
+        <div class="grid-area-brushSize-label">
+            <label for="field_brushSize">BRUSH <p>{{brushSize}}</p></label>
+        </div>
+        <div class="grid-area-brushSize">
+            <input type="range" class="range" name="brushSize" formControlName="brushSize" id="field_brushSize" (ngModelChange)="setBrushSize($event)" min="0" max="10" step="1"/>
+        </div>
+        <div class="grid-area-dotSize-label">
+            <label for="field_dotSize">DOT <p>{{project.dotSize}}</p></label>
+        </div>
+        <div class="grid-area-dotSize">
+            <input #dotSizeRange type="range" class="range" name="dotSize" formControlName="dotSize" id="field_dotSize" (ngModelChange)="setDotSize($event)" min="1" max="6" step="1"/>
+        </div>
+        <div class="grid-area-draw-label">
+            <label>DRAW</label> &nbsp; 
+        </div>
+        <div class="grid-area-draw-drag">
+            <input type="radio" name="drawMode" formControlName="drawMode" id="drawDrag" value="drag" (ngModelChange)="setDrawMode($event)"> 
+            <label for="drawDrag">DRAG</label> &nbsp; 
+        </div>
+        <div class="grid-area-draw-black">
+            <input type="radio" name="drawMode" formControlName="drawMode" id="drawBlack" value="black" (ngModelChange)="setDrawMode($event)"> 
+            <label for="drawBlack">BLACK</label> &nbsp; 
+        </div>
+        <div class="grid-area-draw-white">
+            <input type="radio" name="drawMode" formControlName="drawMode" id="drawWhite" value="white" (ngModelChange)="setDrawMode($event)">
+            <label for="drawWhite">WHITE</label> &nbsp;
+        </div>
+        <div class="grid-area-draw-erase">
+            <input type="radio" name="drawMode" formControlName="drawMode" id="drawErase" value="erase" (ngModelChange)="setDrawMode($event)">
+            <label for="drawErase">ERASE</label> &nbsp; 
+        </div>
+        <div class="grid-area-force-safe" style="text-align: right">
+            <input type="checkbox" name="forceSafe" formControlName="forceSafe" id="forceSafe" (ngModelChange)="setForceSafe($event)">
+            <label for="forceSafe">FORCE SAFE</label>
+        </div>
+        <div class="grid-area-preview">
+            <p (mouseover)="setIsPreview(true)" (mouseout)="setIsPreview(false)">PREVIEW</p> 
+        </div>
+        <div class="grid-area-validation">
+            <p #validIndicatior></p>
+        </div>
+        <div class="grid-area-file-import">
+            <input #fileInput type="file" name="fileImport" id="fileImport" style="display: none;" (change)="onFileInputChange($event)" accept=".bmp"/>
+            <label for="fileImport"><p>IMPORT</p></label>
+            <canvas #canvasHidden width="200" height="200" style="display: none;"></canvas>
+        </div>
+        <div class="grid-area-image-list">
+            <table>
+                <tr>
+                    <td>IMAGES</td>
+                    <td colspan="2">SIZE</td>
+                    <td colspan="2">ORIGIN</td>
+                </tr>
+                <tr>
+                    <td>NAME</td>
+                    <td>W</td>
+                    <td>H</td>
+                    <td>X</td>
+                    <td>Y</td>
+                </tr>
+                <tr *ngFor = "let image of project.images">
+                    <td *ngIf = "image.name !== undefined"><input type="text" value={{image.name}} style="width: 40px;"></td>
+                    <td *ngIf = "image.matrix !== undefined">{{image.matrix.length}}</td>
+                    <td *ngIf = "image.matrix !== undefined">{{image.matrix[0].length}}</td>
+                    <td *ngIf = "image.origin !== undefined">{{image.origin.x | number : '1.0-2'}}</td>
+                    <td *ngIf = "image.origin !== undefined">{{image.origin.y | number : '1.0-2'}}</td>
+                </tr>
+                <tr>
+                    <td>BASE</td>
+                    <td *ngIf = "project.matrix !== undefined">{{project.matrix.length}}</td>
+                    <td *ngIf = "project.matrix !== undefined">{{project.matrix.length}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                
+            </table>
+        </div>
+        <div class="grid-area-coordinates">
+            <p #coordIndicator></p>
+        </div>
+    </div>
+</form>
+<div class="container">
+    <canvas #canvas></canvas>
+</div>
