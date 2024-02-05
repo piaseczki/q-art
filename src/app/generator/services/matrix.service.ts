@@ -74,23 +74,21 @@ export class MatrixService {
     }
 
     private static genFinderPattern (matrix: Module[][]): Module[][] {
-        let s: number = matrix.length;
-        const whiteBit: FinderModule = new FinderModule(false);
-        const blackBit: FinderModule = new FinderModule(true);
-        for (let x: number = 0; x < s; x == 7 ? (x += s - 15) : x++) {
-            for (let y: number = 0; y < s; y == 7 ? (y += s - 15) : y++) {
+        let m: number = matrix.length;
+        for (let x: number = 0; x < m; x == 7 ? (x += m - 15) : x++) {
+            for (let y: number = 0; y < m; y == 7 ? (y += m - 15) : y++) {
                 if (x <= 7 || y <= 7) {
                     if (
                         x == 7 ||
-                        x == s - 8 ||
+                        x == m - 8 ||
                         y == 7 ||
-                        y == s - 8 ||
-                        ((x == 1 || x == 5 || x == s - 6 || x == s - 2) && ((y >= 1 && y <= 5) || (y >= s - 6 && y <= s - 2))) ||
-                        ((y == 1 || y == 5 || y == s - 6 || y == s - 2) && ((x >= 1 && x <= 5) || (x >= s - 6 && x <= s - 2)))
+                        y == m - 8 ||
+                        ((x == 1 || x == 5 || x == m - 6 || x == m - 2) && ((y >= 1 && y <= 5) || (y >= m - 6 && y <= m - 2))) ||
+                        ((y == 1 || y == 5 || y == m - 6 || y == m - 2) && ((x >= 1 && x <= 5) || (x >= m - 6 && x <= m - 2)))
                     ) {
-                        matrix[x][y] = whiteBit;
+                        matrix[x][y] = new FinderModule(false);
                     } else {
-                        matrix[x][y] = blackBit;
+                        matrix[x][y] = new FinderModule(true);
                     }
                 }
             }

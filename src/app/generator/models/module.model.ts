@@ -64,14 +64,13 @@ export class Module {
     }
 
     draw (generator: Generator, coord: Coord): void {
-        let floorCoord = new Coord(Math.floor(coord.x), Math.floor(coord.y));
-        generator.ctx.fillStyle = this.getValue(generator.project.maskNo, floorCoord) ? this.finalBlack : this.finalWhite;
-        generator.ctx.fillRect(floorCoord.x * generator.scale, floorCoord.y * generator.scale, generator.scale, generator.scale);
+        generator.ctx.fillStyle = this.getValue(generator.project.maskNo, coord) ? this.finalBlack : this.finalWhite;
+        generator.ctx.fillRect(coord.x * generator.scale, coord.y * generator.scale, generator.scale, generator.scale);
         if (!generator.isPreview && !this.isSafe()) {
             let dist: number = (generator.scale - generator.scale * generator.project.dotSize / generator.project.subdivision) / 2;
             let size: number = generator.scale * generator.project.dotSize / generator.project.subdivision;
-            generator.ctx.fillStyle = this.getValue(generator.project.maskNo, floorCoord) ? this.black : this.white;
-            generator.ctx.fillRect(floorCoord.x * generator.scale + dist, floorCoord.y * generator.scale + dist, size, size);
+            generator.ctx.fillStyle = this.getValue(generator.project.maskNo, coord) ? this.black : this.white;
+            generator.ctx.fillRect(coord.x * generator.scale + dist, coord.y * generator.scale + dist, size, size);
         }
         this.drawImage(generator, coord);
     }
@@ -159,6 +158,12 @@ export class BezelModule extends Module {
     override isSafe (): boolean {
         return true;
     }
+
+    override draw (generator: Generator, coord: Coord): void {
+        generator.ctx.fillStyle = this.finalWhite;
+        generator.ctx.fillRect(coord.x * generator.scale, coord.y * generator.scale, generator.scale, generator.scale);
+        this.drawImage(generator, coord);
+    }
 }
 
 export class FunctionModule extends Module {
@@ -179,18 +184,69 @@ export class VersionModule extends FunctionModule { }
 
 export class FinderModule extends FunctionModule { 
 
-    override isSafe (): boolean {
-        return false;
+    override isSafe (generator: Generator, coord: Coord): boolean {
+        let bezel: number = generator.project.bezel;
+        let length: number = generator.project.matrix.length;
+        let dist: number = 0.5 * generator.project.dotSize / generator.project.subdivision + 0.5;
+        if (DrawService.isLesser(coord.x, bezel - dist) ||
+            DrawService.isLesser(coord.y, bezel - dist) ||
+            DrawService.isGreaterOrEqual(coord.x, bezel + 7 + dist) && DrawService.isLesser(coord.x, bezel + 8) ||
+            DrawService.isGreaterOrEqual(coord.y, bezel + 7 + dist) && DrawService.isLesser(coord.y, bezel + 8) ||
+            DrawService.isGreaterOrEqual(coord.x, length - bezel - 8) && DrawService.isLesser(coord.x, length - bezel - 7 - dist) ||
+            DrawService.isGreaterOrEqual(coord.y, length - bezel - 8) && DrawService.isLesser(coord.y, length - bezel - 7 - dist) ||
+            DrawService.isGreaterOrEqual(coord.x, generator.project.matrix.length - bezel + dist) ||
+            DrawService.isGreaterOrEqual(coord.y, generator.project.matrix.length - bezel + dist)
+        ) {
+            return true;
+        }
+        return false
     }
 
     override draw (generator: Generator, coord: Coord): void {
-        let floorCoord = new Coord(Math.floor(coord.x), Math.floor(coord.y));
-        if (!generator.isPreview && !this.isSafe()) {
-            generator.ctx.fillStyle = this.getValue() ? Color.DARK_GREY : Color.LIGHT_GREY;
+        let bezel: number = generator.project.bezel;
+        let length: number = generator.project.matrix.length;
+        let scale: number = generator.scale;
+        let dist: number = 0.5 * generator.project.dotSize / generator.project.subdivision + 0.5;
+        if (generator.isPreview) {
+            generator.ctx.fillStyle = this.getValue() ? this.finalBlack : this.finalWhite;
+            generator.ctx.fillRect(coord.x * scale, coord.y * scale, scale, scale);
         } else {
-            generator.ctx.fillStyle = this.getValue() ? Color.BLACK : Color.WHITE;
+            generator.ctx.fillStyle = this.finalWhite;
+            generator.ctx.fillRect(coord.x * scale, coord.y * scale, scale, scale);
+            generator.ctx.fillStyle = this.white;
+            if (DrawService.isEqual(coord.x, bezel - 1) && (DrawService.isEqual(coord.y, bezel - 1)) ||
+                DrawService.isEqual(coord.x, bezel - 1) && (DrawService.isEqual(coord.y, length - bezel - 8)) ||
+                DrawService.isEqual(coord.x, length - bezel - 8) && (DrawService.isEqual(coord.y, bezel - 1))) {
+                generator.ctx.fillRect((coord.x + 1 - dist) * scale, (coord.y + 1 - dist) * scale, dist * scale, dist * scale);
+            } else if (DrawService.isEqual(coord.x, bezel - 1) && (DrawService.isEqual(coord.y, bezel + 7)) ||
+                DrawService.isEqual(coord.x, bezel - 1) && (DrawService.isEqual(coord.y, length - bezel)) ||
+                DrawService.isEqual(coord.x, length - bezel - 8) && (DrawService.isEqual(coord.y, bezel + 7))) {
+                generator.ctx.fillRect((coord.x + 1 - dist) * scale, coord.y* scale, dist * scale, dist * scale);
+            } else if (DrawService.isEqual(coord.x, bezel + 7) && (DrawService.isEqual(coord.y, bezel - 1)) ||
+                DrawService.isEqual(coord.x, bezel + 7) && (DrawService.isEqual(coord.y, length - bezel - 8)) ||
+                DrawService.isEqual(coord.x, length - bezel) && (DrawService.isEqual(coord.y, bezel - 1))) {
+                generator.ctx.fillRect(coord.x * scale, (coord.y + 1 - dist) * scale, dist * scale, dist * scale);
+            } else if (DrawService.isEqual(coord.x, bezel + 7) && (DrawService.isEqual(coord.y, bezel + 7)) ||
+                DrawService.isEqual(coord.x, bezel + 7) && (DrawService.isEqual(coord.y, length - bezel)) ||
+                DrawService.isEqual(coord.x, length - bezel) && (DrawService.isEqual(coord.y, bezel + 7))) {
+                generator.ctx.fillRect(coord.x * scale, coord.y* scale, dist * scale, dist * scale);
+            } else if (DrawService.isEqual(coord.x, bezel - 1) ||
+                DrawService.isEqual(coord.x, length - bezel - 8)) {
+                generator.ctx.fillRect((coord.x + 1 - dist) * scale, coord.y * scale, dist * scale, scale);
+            } else if (DrawService.isEqual(coord.x, bezel + 7) ||
+                DrawService.isEqual(coord.x, length - bezel)) {
+                generator.ctx.fillRect(coord.x * scale, coord.y * scale, dist * scale, scale);
+            } else if (DrawService.isEqual(coord.y, bezel - 1) ||
+                DrawService.isEqual(coord.y, length - bezel - 8)) {
+                generator.ctx.fillRect(coord.x * scale, (coord.y + 1 - dist) * scale, scale, dist * scale);
+            } else if (DrawService.isEqual(coord.y, bezel + 7) ||
+                DrawService.isEqual(coord.y, length - bezel)) {
+                    generator.ctx.fillRect(coord.x * scale, coord.y * scale, scale, dist * scale);
+            } else {
+                generator.ctx.fillStyle = this.getValue() ? this.black : this.white;
+                generator.ctx.fillRect(coord.x * scale, coord.y * scale, scale, scale);
+            }
         }
-        generator.ctx.fillRect(floorCoord.x * generator.scale, floorCoord.y * generator.scale, generator.scale, generator.scale);
         this.drawImage(generator, coord);
     }
 }

@@ -67,20 +67,20 @@ export class Generator implements OnInit {
         this.decoder = new Decoder();
         this.browserCodeReader = new BrowserQRCodeReader();
         this.rotation = 0;
-        this.scale = 24;
+        this.scale = 34;
         this.drawMode = 'black';
         this.brushSize = 0;
         this.forceSafe = false;
 
         this.project = new Project();
         this.project.message = 'HELLO WORLD';
-        this.project.size = 3;
+        this.project.size = 1;
         this.project.generator = this;
         this.project.mode = Mode.ALPHANUMERIC;
         this.project.correction = Correction.LOW;
         this.project.maskNo = 1;
         this.project.bezel = 3;
-        this.project.subdivision = 2;
+        this.project.subdivision = 3;
         this.project.dotSize = 1;
         this.project.images = new Array<ImageLayer>();
 
@@ -266,6 +266,9 @@ export class Generator implements OnInit {
             this.dotSizeRange.nativeElement.max = subdivision - 1;
         }
         this.project.subdivision = subdivision;
+        let stuffCodewords: StuffCodeword[] = [];
+        DrawService.collectCodewords(this, stuffCodewords);
+        DrawService.regenCodewords(stuffCodewords);
         DrawService.redrawAll(this);
     }
 

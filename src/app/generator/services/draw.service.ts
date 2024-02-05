@@ -9,7 +9,7 @@ import { fromEvent } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class DrawService {
 
-    public static readonly TOLERANCE:number = 0.0000000000001;
+    public static readonly TOLERANCE:number = 0.00000001;
        
     public static tolerate (num: number): number {
         let roundNum = Math.round(num);
@@ -155,8 +155,6 @@ export class DrawService {
     }
 
     private static drawCursor (generator: Generator, coord: Coord, prevCoord: Coord): void {
-        let size: number = generator.project.dotSize / generator.project.subdivision;
-        let dist: number = (1 - size) / 2;
         if (prevCoord !== undefined && prevCoord.x !== undefined && prevCoord.y !== undefined) {
             let xMin: number = Math.floor(prevCoord.x - generator.brushSize - 1);
             xMin = xMin < 0 ? 0 : xMin;
@@ -165,7 +163,7 @@ export class DrawService {
             let xMax: number = Math.floor(prevCoord.x + generator.brushSize + 2);
             xMax = xMax > generator.project.matrix.length ? generator.project.matrix.length : xMax;
             let yMax: number = Math.floor(prevCoord.y + generator.brushSize + 2);
-            yMax = yMax > generator.project.matrix.length ? generator.project.matrix.length : yMax;
+            yMax = yMax > generator.project.matrix.length ? generator.project.matrix.length : yMax; 
             for (let ix: number = xMin; ix < xMax; ix++) {
                 for (let iy: number = yMin; iy < yMax; iy++) {
                     generator.project.matrix[ix][iy].draw(generator, new Coord(ix, iy));
