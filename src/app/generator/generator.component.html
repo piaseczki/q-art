@@ -34,7 +34,7 @@
             <label for="field_correction">CORRECTION <p>{{project.correction}}</p></label>
         </div>
         <div class="grid-area-correction">
-            <input type="range" class="range" name="correction" formControlName="correction" id="field_correction" (ngModelChange)="setCorrection($event)" min="1" max="4" step="1"/>
+            <input type="range" class="range" name="correction" formControlName="correction" id="field_correction" (ngModelChange)="setCorrection($event)" min="1" max="4" step="1" value="1"/>
         </div>
         <div class="grid-area-mask-label">
             <label for="field_mask">MASK <p>{{project.maskNo}}</p></label>

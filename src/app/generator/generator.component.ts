@@ -49,7 +49,7 @@ export class Generator implements OnInit {
     generatorForm = this.formBuilder.group({
         message: new FormControl<string>(null),
         mode: new FormControl<Mode>(null),
-        correction: new FormControl<Correction>(null),
+        correction: new FormControl<number>(null),
         size: new FormControl<number>(null),
         maskNo: new FormControl<number>(null),
         bezel: new FormControl<number>(null),
@@ -97,7 +97,7 @@ export class Generator implements OnInit {
         this.generatorForm.get('message').setValue(this.project.message);
         this.generatorForm.get('size').setValue(this.project.size);
         this.generatorForm.get('mode').setValue(this.project.mode);
-        this.generatorForm.get('correction').setValue(this.project.correction);
+        this.generatorForm.get('correction').setValue(this.getCorrection());
         this.generatorForm.get('maskNo').setValue(this.project.maskNo);
         this.generatorForm.get('bezel').setValue(this.project.bezel);
         this.generatorForm.get('subdivision').setValue(this.project.subdivision);
@@ -216,6 +216,15 @@ export class Generator implements OnInit {
     setMode(mode: Mode): void {
         this.project.mode = mode;
         this.generate();
+    }
+
+    getCorrection (): number {
+        switch(this.project.correction) {
+            case Correction.LOW : return 1;
+            case Correction.MEDIUM : return 2;
+            case Correction.QUARTILE : return 3;
+            case Correction.HIGH : return 4; 
+        }
     }
 
     setCorrection(correctionVal: number): void {
