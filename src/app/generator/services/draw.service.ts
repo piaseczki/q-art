@@ -9,7 +9,7 @@ import { fromEvent } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class DrawService {
 
-    public static readonly TOLERANCE:number = 0.00000001;
+    public static readonly TOLERANCE:number = 0.00001;
        
     public static tolerate (num: number): number {
         let roundNum = Math.round(num);
@@ -518,7 +518,7 @@ export const enum Color {
     CYAN = '#00FFFF',
     MAGENTA = '#FF00FF',
     GREY = '#404040',
-    LIGHT_GREY = '#BFBFBF',
+    LIGHT_GREY = '#cdcdcd',
     DARK_GREY = '#404040',
     LIGHTYELLOW = '#FFFF99'
 }

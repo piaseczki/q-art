@@ -24,6 +24,22 @@
     overflow: auto;
 }
 
+.coord-indicator {
+
+    text-align: right;
+    min-width: 50px;
+}
+
+select {
+    /* min-width: 260px; */
+}
+
+table {
+    /* float: left; */
+    margin-right: 0;
+    margin-left: auto; 
+}
+
 textarea, .range, select {
     resize: none;
     width: calc(100% - 20px);
@@ -36,8 +52,9 @@ canvas {
 
 p {
     margin: 0;
-    padding: 0;
+    padding: 0px, 50px, 0px, 0px;
     float: right;
+    user-select: none;
 }
 
 td {

@@ -27,7 +27,8 @@ export class Generator implements OnInit {
     @ViewChild('canvas') canvas: ElementRef;
     @ViewChild('canvasHidden') canvasHidden: ElementRef;
     @ViewChild('validIndicatior') validIndicator: ElementRef;
-    @ViewChild('coordIndicator') coordIndicator: ElementRef;
+    @ViewChild('coordIndicatorX') coordIndicatorX: ElementRef;
+    @ViewChild('coordIndicatorY') coordIndicatorY: ElementRef;
     @ViewChild('fileInput') fileInput: ElementRef;
     @ViewChild('dotSizeRange') dotSizeRange: ElementRef;
 
@@ -67,14 +68,14 @@ export class Generator implements OnInit {
         this.decoder = new Decoder();
         this.browserCodeReader = new BrowserQRCodeReader();
         this.rotation = 0;
-        this.scale = 34;
+        this.scale = 30;
         this.drawMode = 'black';
-        this.brushSize = 0;
+        this.brushSize = 6;
         this.forceSafe = false;
 
         this.project = new Project();
         this.project.message = 'HELLO WORLD';
-        this.project.size = 1;
+        this.project.size = 2;
         this.project.generator = this;
         this.project.mode = Mode.ALPHANUMERIC;
         this.project.correction = Correction.LOW;
@@ -192,7 +193,8 @@ export class Generator implements OnInit {
     printCoord(coord: Coord): void {
         let coordX: any = coord.x === undefined ? 'U' : coord.x;
         let coordY: any = coord.y === undefined ? 'U' : coord.y;
-        this.coordIndicator.nativeElement.innerText = coordX.toFixed(2) + ' / ' + coordY.toFixed(2);
+        this.coordIndicatorX.nativeElement.innerText = coordX.toFixed(2) + ' /';
+        this.coordIndicatorY.nativeElement.innerText = coordY.toFixed(2);
     }
 
     setCursor(cursor: string): void {
