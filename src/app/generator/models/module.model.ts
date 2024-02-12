@@ -82,48 +82,6 @@ export class Module {
         return undefined;
     }
 
-    getModuleImage2 (generator: Generator, coord: Coord): ImageLayer {
-        let image: ImageLayer = generator.project.images[0];
-        let subdivision: number = generator.project.subdivision;
-        if (image !== undefined && image.matrix !== undefined && image.origin !== undefined &&
-            DrawService.isGreater(coord.x + 1, image.origin.x) &&
-            DrawService.isGreater(coord.y + 1, image.origin.y) &&
-            DrawService.isLesser(coord.x * subdivision, image.origin.x * subdivision + image.matrix.length) &&
-            DrawService.isLesser(coord.y * subdivision, image.origin.y * subdivision + image.matrix[0].length)
-        ) {
-            let emptyPixel: Pixel = new Pixel();
-            let subImage: ImageLayer = new ImageLayer("");
-            subImage.origin = coord;
-            subImage.matrix = new Array<Pixel>(subdivision).fill(emptyPixel)
-                              .map(() => new Array<Pixel>(subdivision).fill(emptyPixel));
-            let xMin: number = DrawService.tolerate((image.origin.x - coord.x) * subdivision);
-            xMin = xMin < 0 ? 0 : xMin;
-            let yMin: number = DrawService.tolerate((image.origin.y - coord.y) * subdivision);
-            yMin = yMin < 0 ? 0 : yMin;
-            let xMax: number = DrawService.tolerate(
-                image.origin.x * subdivision + image.matrix.length - coord.x * subdivision);
-            xMax = xMax > subdivision ? subdivision : xMax;
-            let yMax: number = DrawService.tolerate(
-                image.origin.y * subdivision + image.matrix[0].length - coord.y * subdivision);
-            yMax = yMax > subdivision ? subdivision : yMax;
-
-            for (let ix: number = xMin; ix < xMax; ix++) {
-                for (let iy: number = yMin; iy < yMax; iy++) {
-                    let tempCoord = new Coord(ix + DrawService.tolerate((coord.x - image.origin.x) * subdivision), 
-                                              iy + DrawService.tolerate((coord.y - image.origin.y) * subdivision));
-                    if (image.matrix[tempCoord.x][tempCoord.y] !== undefined && 
-                        image.matrix[tempCoord.x][tempCoord.y].getValue() !== undefined
-                    ) {
-                        subImage.matrix[ix][iy] = image.matrix[tempCoord.x][tempCoord.y];
-                    }
-                }
-            }
-            console.info(subImage);
-            return subImage;
-        }
-        return undefined;
-    }
-
     getModuleImage (generator: Generator, coord: Coord): ImageLayer {
         let image: ImageLayer = generator.project.images[0];
         let subDiv: number = generator.project.subdivision;

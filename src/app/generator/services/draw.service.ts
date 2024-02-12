@@ -9,7 +9,7 @@ import { fromEvent } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class DrawService {
 
-    public static readonly TOLERANCE:number = 0.00001;
+    public static readonly TOLERANCE:number = 0.000001;
        
     public static tolerate (num: number): number {
         let roundNum = Math.round(num);
@@ -75,9 +75,11 @@ export class DrawService {
 
     static manageDrawEvents (generator: Generator): void {
         let isMouseDown: boolean = false;
+        let isMouseOverMenu: boolean = false;
         let coord: Coord = new Coord(undefined, undefined);
         let prevCoord: Coord = new Coord(undefined, undefined);
         fromEvent(document, 'mousedown').subscribe((e: MouseEvent) => {
+            if (isMouseOverMenu) return;
             isMouseDown = true;
             if (generator.drawMode !== 'drag') {
                 this.draw(generator, coord);
@@ -87,13 +89,8 @@ export class DrawService {
             }
             generator.printCoord(coord);
         });
-        fromEvent(document, 'mouseup').subscribe(() => {
-            isMouseDown = false;
-            if (generator.drawMode === 'drag') {
-                this.drag(generator, coord, prevCoord, isMouseDown);
-            }
-        });
         fromEvent(document, 'mousemove').subscribe((e: MouseEvent) => {
+            if (isMouseOverMenu) return;
             prevCoord.x = coord.x;
             prevCoord.y = coord.y;
             coord = this.getCoord(e, generator);
@@ -108,8 +105,20 @@ export class DrawService {
             }
             generator.printCoord(coord);
         });
+        fromEvent(document, 'mouseup').subscribe(() => {
+            isMouseDown = false;
+            if (generator.drawMode === 'drag') {
+                this.drag(generator, coord, prevCoord, isMouseDown);
+            }
+        });
+        fromEvent(generator.menu.nativeElement, 'mouseenter').subscribe(() => {
+            isMouseOverMenu = true;
+        });
+        fromEvent(generator.menu.nativeElement, 'mouseleave').subscribe(() => {
+            isMouseOverMenu = false;
+        });
     }
-
+    
     private static getCoord (e: MouseEvent, generator: Generator): Coord {
         const rect: ClientRect = generator.ctx.canvas.getBoundingClientRect();
         let x: number = e.clientX - rect.left - generator.ctx.canvas.width / 2;
@@ -405,59 +414,6 @@ export class DrawService {
         console.debug("regenCodewords", codewords);
         blocks.forEach(b => b.regenCorrectionCodewords());
     }
-
-    // static drawBit (generator: Generator, coord: Coord): void {
-    //     let colorScheme: ColorScheme = this.getColorScheme(generator.project, coord);
-    //     let size: number = generator.project.matrix.length;
-    //     let x: number = coord.x;
-    //     let y: number = coord.y;
-    //     let scale = generator.scale;
-
-    //     generator.ctx.fillStyle = colorScheme.foreground;
-    //     generator.ctx.fillRect(coord.x * scale, coord.y * scale, scale, scale);
-
-    //     if (scale < 10 || colorScheme.foreground === colorScheme.background) {
-    //         generator.ctx.fillStyle = colorScheme.foreground;
-    //         generator.ctx.fillRect(x * scale, y * scale, scale, scale);
-    //     } else {
-    //         generator.ctx.fillStyle = colorScheme.background;
-    //         generator.ctx.fillRect(x * scale, y * scale, scale, scale);
-    //         generator.ctx.fillStyle = colorScheme.foreground;
-    //         let isAboveBlack: boolean = false;
-    //         if (y - 1 >= 0 && this.getColorScheme(generator.project, new Coord(x, y - 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect(x * scale + 1, y * scale, scale - 2, 1);
-    //             isAboveBlack = true;
-    //         }
-    //         let isRightBlack: boolean = false;
-    //         if (x + 1 < size && this.getColorScheme(generator.project, new Coord(x + 1, y)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect((x + 1) * scale - 1, y * scale + 1, 1, scale - 2);
-    //             isRightBlack = true;
-    //         }
-    //         let isBelowBlack: boolean = false;
-    //         if (y + 1 < size && this.getColorScheme(generator.project, new Coord(x, y + 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect(x * scale + 1, (y + 1) * scale - 1, scale - 2, 1);
-    //             isBelowBlack = true;
-    //         }
-    //         let isLeftBlack: boolean = false;
-    //         if (x - 1 >= 0 && this.getColorScheme(generator.project, new Coord(x - 1, y)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect(x * scale, y * scale + 1, 1, scale - 2);
-    //             isLeftBlack = true;
-    //         }
-    //         if (isAboveBlack && isLeftBlack && this.getColorScheme(generator.project, new Coord(x - 1, y - 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect(x * scale, y * scale, 1, 1);
-    //         }
-    //         if (isRightBlack && isAboveBlack && this.getColorScheme(generator.project, new Coord(x + 1, y - 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect((x + 1) * scale - 1, y * scale, 1, 1);
-    //         }
-    //         if (isBelowBlack && isRightBlack && this.getColorScheme(generator.project, new Coord(x + 1, y + 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect((x + 1) * scale - 1, (y + 1) * scale - 1, 1, 1);
-    //         }
-    //         if (isLeftBlack && isBelowBlack && this.getColorScheme(generator.project, new Coord(x - 1, y + 1)).foreground === colorScheme.foreground) {
-    //             generator.ctx.fillRect(x * scale, (y + 1) * scale - 1, 1, 1);
-    //         }
-    //         generator.ctx.fillRect(x * scale + 1, y * scale + 1, scale - 2, scale - 2);
-    //     }
-    // }
 
     private static rotateContext (ctx: CanvasRenderingContext2D, rotation: number, canvasWidth: number): void {
         ctx.translate(canvasWidth / 2, canvasWidth / 2);

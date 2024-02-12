@@ -24,6 +24,7 @@ import Decoder from '@zxing/library/esm/core/qrcode/decoder/Decoder';
 
 export class Generator implements OnInit {
 
+    @ViewChild('menu') menu: ElementRef;
     @ViewChild('canvas') canvas: ElementRef;
     @ViewChild('canvasHidden') canvasHidden: ElementRef;
     @ViewChild('validIndicatior') validIndicator: ElementRef;
@@ -267,8 +268,7 @@ export class Generator implements OnInit {
     }
 
     setSubdivision(subdivision: number): void {
-        //this.project.dotSize = Math.ceil(subdivision / 2);
-        this.setDotSize(1);
+        this.project.dotSize = 1;
         if (subdivision < 3) {
             this.dotSizeRange.nativeElement.disabled = true;
         } else {
@@ -277,10 +277,26 @@ export class Generator implements OnInit {
             this.dotSizeRange.nativeElement.max = subdivision - 1;
         }
         this.project.subdivision = subdivision;
+        this.updateImageOrigin();
         let stuffCodewords: StuffCodeword[] = [];
         DrawService.collectCodewords(this, stuffCodewords);
         DrawService.regenCodewords(stuffCodewords);
         DrawService.redrawAll(this);
+    }
+
+    private updateImageOrigin(): void {
+        if (this.project.images[0].origin === undefined) return;
+        //console.info(this.project.images[0].origin);
+        if ((this.project.subdivision + this.project.dotSize) % 2 === 0) {
+            this.project.images[0].origin = new Coord (
+                Math.floor(this.project.images[0].origin.x), 
+                Math.floor(this.project.images[0].origin.y))
+        } else if (this.project.images[0].origin.x % 1 === 0 && this.project.images[0].origin.y % 1 === 0) {
+            this.project.images[0].origin = new Coord (
+                this.project.images[0].origin.x + 1 / (this.project.subdivision * 2), 
+                this.project.images[0].origin.y + 1 / (this.project.subdivision * 2))
+        }
+        console.info(this.project.images[0].origin);
     }
 
     setDotSize(dotSize: number): void {

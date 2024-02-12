@@ -1,5 +1,5 @@
 <form name="editForm" [formGroup]="generatorForm">
-    <div class="grid-container">
+    <div #menu class="grid-container">
         <div class="grid-area-message">
             <label for="field_message">MESSAGE</label> <br/>
             <textarea name="message" id="field_message" formControlName="message" (ngModelChange)="setMessage($event)" rows="3">
