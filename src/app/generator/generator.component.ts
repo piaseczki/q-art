@@ -45,7 +45,7 @@ export class Generator implements OnInit {
     brushSize: number;
     selectedImage: number;
     isPreview: boolean;
-    forceSafe: boolean;
+    isForceSafe: boolean;
     
     generatorForm = this.formBuilder.group({
         message: new FormControl<string>(null),
@@ -72,7 +72,7 @@ export class Generator implements OnInit {
         this.scale = 30;
         this.drawMode = 'black';
         this.brushSize = 6;
-        this.forceSafe = false;
+        this.isForceSafe = false;
 
         this.project = new Project();
         this.project.message = 'HELLO WORLD';
@@ -82,16 +82,11 @@ export class Generator implements OnInit {
         this.project.correction = Correction.LOW;
         this.project.maskNo = 1;
         this.project.bezel = 3;
-        this.project.subdivision = 3;
+        this.project.subdivision = 4;
         this.project.dotSize = 1;
         this.project.images = new Array<ImageLayer>();
 
         let img: ImageLayer = new ImageLayer("img1");
-        //img.origin = new Coord(1 + 2/3, 1 + 2/3);
-        //img.matrix = [[new ImageBit(true)]];
-        // img.matrix.push([new ImageBit(true), new ImageBit(true), new ImageBit(true)]);
-        // img.matrix.push([new ImageBit(true), new ImageBit(true), new ImageBit(true)]);
-        // img.matrix.push([new ImageBit(true), new ImageBit(true), new ImageBit(true)]);
 
         this.project.images.push(img);
 
@@ -107,7 +102,7 @@ export class Generator implements OnInit {
         this.generatorForm.get('rotation').setValue(this.rotation);
         this.generatorForm.get('drawMode').setValue(this.drawMode);
         this.generatorForm.get('brushSize').setValue(this.brushSize);
-        this.generatorForm.get('forceSafe').setValue(this.forceSafe);
+        this.generatorForm.get('forceSafe').setValue(this.isForceSafe);
     }
 
     async ngAfterViewInit(): Promise<void> {
@@ -286,21 +281,24 @@ export class Generator implements OnInit {
 
     private updateImageOrigin(): void {
         if (this.project.images[0].origin === undefined) return;
-        //console.info(this.project.images[0].origin);
         if ((this.project.subdivision + this.project.dotSize) % 2 === 0) {
             this.project.images[0].origin = new Coord (
                 Math.floor(this.project.images[0].origin.x), 
                 Math.floor(this.project.images[0].origin.y))
         } else if (this.project.images[0].origin.x % 1 === 0 && this.project.images[0].origin.y % 1 === 0) {
             this.project.images[0].origin = new Coord (
-                this.project.images[0].origin.x + 1 / (this.project.subdivision * 2), 
-                this.project.images[0].origin.y + 1 / (this.project.subdivision * 2))
+                Math.floor(this.project.images[0].origin.x) + 1 / (this.project.subdivision * 2), 
+                Math.floor(this.project.images[0].origin.y) + 1 / (this.project.subdivision * 2))
         }
         console.info(this.project.images[0].origin);
     }
 
     setDotSize(dotSize: number): void {
         this.project.dotSize = dotSize;
+        this.updateImageOrigin();
+        let stuffCodewords: StuffCodeword[] = [];
+        DrawService.collectCodewords(this, stuffCodewords);
+        DrawService.regenCodewords(stuffCodewords);
         DrawService.redrawAll(this);
     }
 
@@ -314,7 +312,7 @@ export class Generator implements OnInit {
     }
 
     setForceSafe(forceSafe: boolean): void {
-        this.forceSafe = forceSafe;
+        this.isForceSafe = forceSafe;
         DrawService.redrawAll(this);
     }
 

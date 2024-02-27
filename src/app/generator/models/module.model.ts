@@ -25,8 +25,8 @@ export class Module {
     }
 
     getImageValue (generator: Generator, coord: Coord): boolean {
-        let image: ImageLayer = this.getModuleImage (generator, coord);
         let baseValue = this.getValue(generator.project.maskNo, coord);
+        let image: ImageLayer = this.getModuleImage (generator, coord);
         if (image === undefined) {
             return baseValue;
         } else {
@@ -186,8 +186,8 @@ export class FinderModule extends FunctionModule {
             DrawService.isLesser(coord.y, bezel - dist) ||
             DrawService.isGreaterOrEqual(coord.x, bezel + 7 + dist) && DrawService.isLesser(coord.x, bezel + 8) ||
             DrawService.isGreaterOrEqual(coord.y, bezel + 7 + dist) && DrawService.isLesser(coord.y, bezel + 8) ||
-            DrawService.isGreaterOrEqual(coord.x, length - bezel - 8) && DrawService.isLesser(coord.x, length - bezel - 7 - dist) ||
-            DrawService.isGreaterOrEqual(coord.y, length - bezel - 8) && DrawService.isLesser(coord.y, length - bezel - 7 - dist) ||
+            DrawService.isGreaterOrEqual(coord.x, length - bezel - 9) && DrawService.isLesser(coord.x, length - bezel - 7 - dist) ||
+            DrawService.isGreaterOrEqual(coord.y, length - bezel - 9) && DrawService.isLesser(coord.y, length - bezel - 7 - dist) ||
             DrawService.isGreaterOrEqual(coord.x, generator.project.matrix.length - bezel + dist) ||
             DrawService.isGreaterOrEqual(coord.y, generator.project.matrix.length - bezel + dist))
     }
@@ -350,6 +350,12 @@ export class RemainderModule extends MaskedModule {
 
     override isSafe (): boolean {
         return true;
+    }
+
+    override draw (generator: Generator, coord: Coord): void {
+        generator.ctx.fillStyle = this.getValue(generator.project.maskNo) ? this.safeBlack : this.safeWhite;
+        generator.ctx.fillRect(coord.x * generator.scale, coord.y * generator.scale, generator.scale, generator.scale);
+        this.drawImage(generator, coord);
     }
 
     constructor(public override coord: Coord) {
